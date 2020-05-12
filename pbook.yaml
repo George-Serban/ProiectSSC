@@ -1,0 +1,102 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Crearea retelei
+      os_network:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        name: net1
+        project: admin
+        provider_network_type: vxlan
+    
+    - name: Crearea subretelei
+      os_subnet:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        network_name: net1
+        name: sub1
+        cidr: 192.168.57.0/24
+
+    - name: Create a router
+      os_router:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        name: R1
+        network: "public"
+        interfaces:
+          - sub1
+    - name: Crearea grupului de securitate
+      os_security_group:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        name: sec_group
+    
+    - name: Atasarea regulii pentru SSH
+      os_security_group_rule:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        security_group: sec_group
+        direction: ingress
+        protocol: tcp
+        port_range_min: 22
+        port_range_max: 22
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: Atasarea regulii pentru HTTP
+      os_security_group_rule:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        security_group: sec_group
+        direction: ingress
+        protocol: tcp
+        port_range_min: 80
+        port_range_max: 80
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: Atasarea regulii pentru HTTPS
+      os_security_group_rule:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        security_group: sec_group
+        direction: ingress
+        protocol: tcp
+        port_range_min: 443
+        port_range_max: 443
+        remote_ip_prefix: 0.0.0.0/0
+
+    - name: Crearea primului VM
+      os_server:
+        state: present
+        auth:
+          username: admin
+          password: ADMIN
+          project_name: admin
+        name: vm1
+        image: 03ee0679-9747-4d48-81d8-d2cda6713c40
+        key_name: mykey
+        flavor: m1.tiny
+        network: net1
+        security_groups: sec_group
+        auto_ip: yes
+        delete_fip: yes
