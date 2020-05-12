@@ -15,11 +15,14 @@ Aplicatia este folosita pentru a crea rapid un setup ca cel mentionat anterior i
 
 ### Pasi pentru rularea aplicatiei:
 1.	Descarcarea codului:
-	git clone https://github.com/George-Serban/ProiectSSC.git
+
+	*git clone https://github.com/George-Serban/ProiectSSC.git*
 
 2.	Setarea parametrilor de environment:
-	source ~/devstack/openrc admin admin
+
+	*source ~/devstack/openrc admin admin*
 
 3.	Rularea playbook-ului:
-	ansible-playbook pbook.yaml
+
+	*ansible-playbook pbook.yaml*
 
